@@ -1,8 +1,9 @@
 import json
 import boto3
+import os
 
 s3 = boto3.resource('s3')
-bucket = s3.Bucket('comprehendcalls-output')
+bucket = s3.Bucket(os.environ["OutputBucket"])
 
 def lambda_handler(event, context):
 
@@ -15,8 +16,7 @@ def lambda_handler(event, context):
 
     print(response_s3)
 
-
     return {
         'statusCode': 200,
-        'body': json.dumps('Hello from Lambda!')
+        'body': json.dumps('Insights loaded into S3!')
     }

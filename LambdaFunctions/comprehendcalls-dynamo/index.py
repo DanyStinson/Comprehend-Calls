@@ -1,5 +1,7 @@
 import json
 import boto3
+import os
+
 client = boto3.client('dynamodb')
 
 def lambda_handler(event, context):
@@ -12,7 +14,7 @@ def lambda_handler(event, context):
     print(comprehendResults)
 
     response = client.put_item(
-        TableName='ComprehendCalls',
+        TableName= os.environ["DynamoTableName"],
         Item=comprehendResults
     )
 
@@ -20,5 +22,5 @@ def lambda_handler(event, context):
 
     return {
         'statusCode': 200,
-        'body': json.dumps('Hello from Lambda!')
+        'body': json.dumps('Insights loaded into Dynamo!')
     }

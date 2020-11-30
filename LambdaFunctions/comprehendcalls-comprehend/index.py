@@ -14,11 +14,12 @@ def lambda_handler(event, context):
     print(uri)
 
     #Get bucket and key names
-    uri = uri.split('"')[1].split("/")
 
-    bucket = uri[3]
-    key = uri[4]
-    #print("Bucket: " + bucket + " , Key = " + key)
+    bucket = uri.split('"')[1].split("/")[3]
+    key = uri.split('"')[1].split("/")[4]+'/'+uri.split('"')[1].split("/")[5]
+
+    print("Bucket: " + bucket + " , Key = " + key)
+
     #Get object
     obj = s3.Object(bucket, key)
     body = obj.get()['Body'].read()
@@ -32,7 +33,7 @@ def lambda_handler(event, context):
 
     response_values_ddb = {}
     response_values_s3 = []
-    response_values_ddb["transcriptionid"] = {"S":key.split(".json")[0]}
+    response_values_ddb["TranscriptionId"] = {"S":key.split("/")[1].split(".json")[0]}
 
     # Get language
     language_response = comprehend.detect_dominant_language(
@@ -41,7 +42,7 @@ def lambda_handler(event, context):
 
     language=language_response["Languages"][0]["LanguageCode"]
     #print("Language: " + language)
-    response_values_ddb["language"] = {"S":language}
+    response_values_ddb["Language"] = {"S":language}
 
     # Get sentiment
     sentiment_response = comprehend.detect_sentiment(
@@ -50,7 +51,7 @@ def lambda_handler(event, context):
     )
     sentiment = sentiment_response["Sentiment"]
     #print("Sentiment: " + sentiment)
-    response_values_ddb["sentiment"] = {"S":sentiment}
+    response_values_ddb["Sentiment"] = {"S":sentiment}
 
 
     # Get entities
@@ -65,25 +66,25 @@ def lambda_handler(event, context):
     for entity in entities:
         entity_list_ddb[entity["Text"]]={"S":entity["Type"]}
         response_values_s3.append({
-            "transcriptionid":key.split(".json")[0],
-            "language":language,
-            "sentiment":sentiment,
-            "entity_type":entity["Type"],
-            "entity_text":entity["Text"]
+            "TranscriptionId":key.split("/")[1].split(".json")[0],
+            "Language":language,
+            "Sentiment":sentiment,
+            "Entity_type":entity["Type"],
+            "Entity_text":entity["Text"]
         })
-    print("Entities DDB: ")
-    print(entity_list_ddb)
-    print("Entities S3: ")
-    print(entity_list_s3)
-    response_values_ddb["entities"] = {"M":entity_list_ddb}
+    #print("Entities DDB: ")
+    #print(entity_list_ddb)
+    #print("Entities S3: ")
+    #print(entity_list_s3)
+    response_values_ddb["Entities"] = {"M":entity_list_ddb}
 
-    print(response_values_ddb)
-    print(response_values_s3)
+    #print(response_values_ddb)
+    #print(response_values_s3)
 
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!'),
         'comprehendResults_ddb' : response_values_ddb,
         'comprehendResults_s3' : response_values_s3,
-        'transcriptionid':key.split(".json")[0]
+        'transcriptionid':key.split("/")[1].split(".json")[0]
     }

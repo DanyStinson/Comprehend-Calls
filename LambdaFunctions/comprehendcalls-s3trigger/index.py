@@ -1,5 +1,6 @@
 import json
 import boto3
+import os
 
 def lambda_handler(event, context):
     '''
@@ -18,14 +19,13 @@ def lambda_handler(event, context):
     stepFunction = boto3.client('stepfunctions')
 
     response = stepFunction.start_execution(
-        stateMachineArn='arn:aws:states:eu-west-1:ACCOUNTNUMBER:stateMachine:STATEMACHINENAME',
+        stateMachineArn='arn:aws:states:eu-west-1:'+os.environ["AccountId"]+':stateMachine:'+os.environ["StateMachineName"],
         input = json.dumps(input, indent=4)
     )
-
 
     print(response)
 
     return {
         'statusCode': 200,
-        'body': json.dumps('File triggered a new process!')
+        'body': json.dumps('A new file triggered a new process!')
     }

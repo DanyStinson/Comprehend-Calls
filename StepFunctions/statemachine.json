@@ -3,7 +3,7 @@
   "States": {
     "TranscribeAudio": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:eu-west-1:282950570465:function:comprehendcalls-transcribeaudio",
+      "Resource": "${lambdaTranscribeArn}",
       "Parameters": {
         "bucket_name.$": "$.bucket_name",
         "file_key.$": "$.file_key"
@@ -12,13 +12,13 @@
     },
     "ComprehendText": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:eu-west-1:282950570465:function:comprehendcalls-comprehend",
+      "Resource": "${lambdaComprehendArn}",
       "Parameters": {
         "transcribeUri.$": "$.transcribeUri"
       },
       "Next": "StoreResults"
     },
-    "StoreResults": {
+    "StoreResults":{
       "Type": "Parallel",
       "End": true,
       "Branches": [
@@ -27,7 +27,7 @@
           "States": {
             "ResultsDynamo": {
               "Type": "Task",
-              "Resource": "arn:aws:lambda:eu-west-1:282950570465:function:comprehendcalls-dynamo",
+              "Resource": "${lambdaDynamoArn}",
               "Parameters": {
                 "comprehendResults_ddb.$": "$.comprehendResults_ddb"
               },
@@ -40,7 +40,7 @@
           "States": {
             "ResultsS3": {
               "Type": "Task",
-              "Resource": "arn:aws:lambda:eu-west-1:282950570465:function:comprehendcalls-s3-results",
+              "Resource": "${lambdaS3RArn}",
               "Parameters": {
                 "comprehendResults_s3.$": "$.comprehendResults_s3",
                 "transcriptionid.$": "$.transcriptionid"
