@@ -395,5 +395,3 @@ Resources:
         Fn::GetAtt:
           - StateMachineRole
           - Arn
-
-
