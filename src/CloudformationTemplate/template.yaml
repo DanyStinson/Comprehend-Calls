@@ -26,13 +26,13 @@ Parameters:
     Description: The name you want to assign to the Step Funcions State Machine. Select a unique name.
     Default: "your-unique-statemachine-name"
 
-  TranscribeMultipleSpeakers:
-    Type: String
-    Default: 'No'
-    AllowedValues:
-      - 'No'
-      - 'Yes'
-    Description: Enable multiple speaker transcription.
+  #TranscribeMultipleSpeakers:
+  #  Type: String
+  #  Default: 'No'
+  #  AllowedValues:
+  #    - 'No'
+  #    - 'Yes'
+  #  Description: Enable multiple speaker transcription.
 
 Resources:
 
@@ -165,7 +165,7 @@ Resources:
           - Arn
       Environment:
         Variables:
-          MultipleSpeakers: !Ref TranscribeMultipleSpeakers
+          #MultipleSpeakers: !Ref TranscribeMultipleSpeakers
           OutputBucket: !Ref OutputS3BucketName
 
   # 3 - Comprehend Insights
@@ -297,6 +297,63 @@ Resources:
         Variables:
           OutputBucket: !Ref OutputS3BucketName
 
+
+  CustomResourceLambdaRole:
+    Type: AWS::IAM::Role
+    DependsOn: S3InputBucket
+    Properties:
+      AssumeRolePolicyDocument: {
+        "Version": "2012-10-17",
+        "Statement": [ {
+                         "Effect": "Allow",
+                         "Principal": {
+                           "Service": [ "lambda.amazonaws.com" ]
+                         },
+                         "Action": [ "sts:AssumeRole" ]
+                       } ]
+      }
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSLambdaFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      RoleName: !Sub "${InputS3BucketName}-custom-role"
+
+  LambdaHelperFunction:
+    Type: AWS::Lambda::Function
+    DependsOn: CustomResourceLambdaRole
+    Properties:
+      FunctionName: !Sub 'CC-${InputS3BucketName}-HelperFunction'
+      Code:
+        ZipFile: |
+
+          import boto3, json, os
+          import cfnresponse
+          client = boto3.client('s3')
+
+          def handler(event, context):
+              bucket_name = os.environ['inputbucket']
+              client.put_object(Bucket=bucket_name, Key="audios/")
+              responseData = {}
+              cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
+
+      Handler: index.handler
+      Role:
+        Fn::GetAtt:
+          - CustomResourceLambdaRole
+          - Arn
+      Runtime: python3.7
+      Timeout: 60
+      Environment:
+        Variables:
+          inputbucket: !Ref InputS3BucketName
+
+  LambdaFirstInvoke:
+    Type: AWS::CloudFormation::CustomResource
+    DependsOn: LambdaHelperFunction
+    Version: "1.0"
+    Properties:
+      ServiceToken: !GetAtt LambdaHelperFunction.Arn
+
+
   #AWS Step Functions
 
   StateMachineRole:
@@ -395,3 +452,7 @@ Resources:
         Fn::GetAtt:
           - StateMachineRole
           - Arn
+Outputs:
+  InputBucket:
+    Description: Store your audio files in the "audios" folder inside this bucket.
+    Value: !Ref S3InputBucket
