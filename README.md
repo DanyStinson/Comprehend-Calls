@@ -1,6 +1,5 @@
 ![Banner](src/Images/banner.png)
 
-### What am I going to build?
 Welcome to this AWS Comprehend Calls Demo. The objective of this demo is deploy an MVP for a solution which is able to transcribe and extract insights from audio files, like contact center calls. 
 
 
