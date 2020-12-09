@@ -51,7 +51,9 @@ The workflow goes through the following stages:
 
 #### 3. Visualize your data
 
-Once you have the transcriptions insights stored in Amazon S3, you can use visualization tools such as Amazon Quicksight to create reports and visual representations of your data.
+Once you have the transcriptions insights stored in Amazon S3, you can use visualization tools such as [Amazon Quicksight](https://aws.amazon.com/quicksight/) to create reports and visual representations of your data.
+
+![Visualization](src/Images/quicksight.png)
 
 ### How do I build this?
 
