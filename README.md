@@ -31,6 +31,8 @@ After the audio file is sent to Amazon S3, an AWS Lambda Function is triggered, 
 
 [AWS Step Functions](https://aws.amazon.com/step-functions/) is a fully managed service that makes it easy to coordinate the components of distributed applications and microservices using visual workflows.
 
+![Architecture](src/Images/statemachine.png)
+
 The workflow goes through the following stages:
 
 1. **Transcribe the audio file:** An AWS Lambda function will be executed, which will call the [Amazon Transcribe](https://aws.amazon.com/transcribe/) service to obtain the transcription of the audio which was uploaded to Amazon S3. 
@@ -46,7 +48,6 @@ The workflow goes through the following stages:
     [Amazon DynamoDB](https://aws.amazon.com/dynamodb/) is a key-value and document database that delivers single-digit millisecond performance at any scale. It's a fully managed, multi-region, multi-active, durable database with built-in security, backup and restore, and in-memory caching for internet-scale applications
 
 4. **Store results in Amazon S3:** An AWS Lambda function is triggered, which will store the transcription insights into your Amazon S3 Output bucket.
-
 
 #### 3. Visualize your data
 
