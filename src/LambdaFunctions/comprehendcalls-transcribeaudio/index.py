@@ -19,7 +19,7 @@ def lambda_handler(event, context):
 
     start_transcription_response = client.start_transcription_job(
             TranscriptionJobName='T-'+timems+'-'+key.split("/")[1],
-            LanguageCode='es-ES',
+            IdentifyLanguage = True,
             MediaFormat=key.split(".")[1],
             Media={
                 'MediaFileUri': "s3://"+bucket+"/"+key
