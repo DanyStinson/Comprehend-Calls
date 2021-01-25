@@ -4,17 +4,16 @@ import os
 
 client = boto3.client('dynamodb')
 
-def lambda_handler(event, context):
 
+def lambda_handler(event, context):
     '''
     Retrieve transcribe results uri sent to Comprehend Text Lambda
     '''
 
-    comprehendResults = event['comprehendResults_ddb']
-    print(comprehendResults)
+    comprehendResults = json.loads(event['comprehendResults_ddb'])
 
     response = client.put_item(
-        TableName= os.environ["DynamoTableName"],
+        TableName=os.environ["DynamoTableName"],
         Item=comprehendResults
     )
 

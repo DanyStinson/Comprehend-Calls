@@ -26,6 +26,10 @@ def lambda_handler(event, context):
             },
             OutputKey = 'transcripts/',
             OutputBucketName= os.environ["OutputBucket"],
+            Settings={
+                'ShowSpeakerLabels': True,
+                'MaxSpeakerLabels': 2,
+            }
 
         )
 
