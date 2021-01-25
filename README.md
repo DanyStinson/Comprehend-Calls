@@ -20,6 +20,8 @@ First, let's have a look at the infrastructure you are going to be able to deplo
 
 The first part of the process is storing your audio files in Amazon S3. Once a file arrives in S3, a Lambda Function will be executed which will trigger the process for extracting the insights from the audio. 
 
+**IMPORTANT: Audio files must not include characters different from [A-Z],[a-z],[0-9] or [ ._ ]**
+
 [Amazon Simple Storage Service (S3)](https://aws.amazon.com/s3/) is object storage built to store and retrieve any amount of data from anywhere on the Internet. It’s a simple storage service that offers an extremely durable, highly available, and infinitely scalable data storage infrastructure at very low costs.   
 
 With [AWS Lambda](https://aws.amazon.com/lambda/), you can run code for virtually any type of application or backend service - all with zero administration. Just upload your code and the service takes care of everything required to run and scale your code with high availability. 
