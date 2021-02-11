@@ -55,6 +55,25 @@ The workflow goes through the following stages:
 
 Once you have the transcriptions insights stored in Amazon S3, you can use visualization tools such as [Amazon Quicksight](https://aws.amazon.com/quicksight/) to create reports and visual representations of your data.
 
+When importing results into Amazon Quicksight select S3 as the data source. You will have to import both conversations and entities data, and then [join](https://docs.aws.amazon.com/quicksight/latest/user/joining-data.html) the data.
+
+Here is an example of the manifest you will have to use to each folder of data:
+```
+{
+    "fileLocations": [
+        {
+            "URIPrefixes": [
+                "s3://[OUTPUT_BUCKET_NAME]/transcriptions-insights/[conversations/entities]]/"
+            ]
+        }
+    ],
+    "globalUploadSettings": {
+        "format": "JSON"
+    }
+}
+```
+
+
 ![Visualization](src/Images/quicksight.png)
 
 ### How do I build this?
