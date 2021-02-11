@@ -63,7 +63,7 @@ Here is an example of the manifest you will have to use to each folder of data:
     "fileLocations": [
         {
             "URIPrefixes": [
-                "s3://[OUTPUT_BUCKET_NAME]/transcriptions-insights/[conversations/entities]]/"
+                "s3://[OUTPUT_BUCKET_NAME]/transcriptions-insights/[conversations and entities]/"
             ]
         }
     ],
